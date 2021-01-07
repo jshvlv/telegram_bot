@@ -14,28 +14,46 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 
 public class Bot extends TelegramLongPollingBot {
+    private static String botToken;
+    private final SimpleDateFormat fullDate = new SimpleDateFormat("d-MM-yyyy");//12-12-2002
+    private final SimpleDateFormat shortFormat = new SimpleDateFormat("d MMMMM");//01 January
 
-    int count=0;
-    int countAll=0;
+    public String getShortUserDate(int date) {
+        Date userDate = new Date((long) date * 1000);
+        int serverDate = new Date().getDate();
+        return shortFormat.format(userDate);
+    }
+    public String getStringDateToParser(int date) {
+        Date userDate = new Date((long) date * 1000);
+        int serverDate = new Date().getDate();
+        return fullDate.format(userDate);
+
+    }
+
     /**
      * Метод для приема сообщений.
      * @param update Содержит сообщение от пользователя.
      */
     @Override
     public void onUpdateReceived(Update update) {
-        count++;
-        countAll=count;
         if(update.hasMessage()) {
             update.getMessage();
-            String message = update.getMessage().getText();
-            int data = update.getMessage().getDate();
-            sendMsg(update.getMessage().getChatId().toString(), message, data);
+            int userDate = update.getMessage().getDate();
+            String id = update.getMessage().getChatId().toString();
+            String message = "Сегодня, " + getShortUserDate(userDate) + "\n" +
+                    Parser.updateParsing(getStringDateToParser(userDate));
+            sendMsg(id, message, userDate);
+            System.out.println("user date is " + userDate
+            + " server date is " + new Date());
         }
         else  if(update.hasCallbackQuery()) {
                 update.getCallbackQuery();
@@ -47,35 +65,13 @@ public class Bot extends TelegramLongPollingBot {
      * @param chatId id чата
      * @param s Строка, которую необходимот отправить в качестве сообщения
      */
-
-
     public synchronized void sendMsg(String chatId, String s, int data){
-
-        Date userDate = new Date((long) data*1000);
-        int nowDay = new Date().getDay();
-        //Если сегодня новый день - скачать программу заново
-        if(userDate.getDay()!=nowDay){
-            Parser.updateParsing();
-            count=0;
-            System.out.println("Parser is updated!");
-        }
-
-        SimpleDateFormat simple = new SimpleDateFormat("d MMMM");
-        String toDay = simple.format(userDate);
-
-        String sending = "*Сегодня, " + toDay + ", на МатчТВ!*\n\n" +
-                Parser.getText();
+        //Parser.updateParsing(getStrinfDateToParser(data));
         SendMessage sendMessage = new SendMessage();
-        System.out.println("message " + count + " was sended...");
-        if (s.contains("/go")) {
-            sending = "*Статистика*\n\n"  +
-                    "Запросов сегодня " + count +
-                    "\nЗапросов всего: " + countAll;
-        }
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(chatId);
         sendMessage.getReplyMarkup();
-        sendMessage.setText(sending);
+        sendMessage.setText(s);
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
@@ -97,10 +93,21 @@ public class Bot extends TelegramLongPollingBot {
      */
     @Override
     public String getBotToken() {
-        return "1084538682:AAEU5y2jTXoYTK7rGxN56b8U-V2Bfl2ny-M";
+        return botToken;
+    }
+    //Загрузка токена бота из файла с конфигами.
+    public static void loadConfig(){
+        try {
+            File file = new File("src/test/config.properties");
+            Properties config = new Properties();
+            config.load(new FileReader(file));
+            botToken = config.getProperty("botToken");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
     public static void main(String[] args) {
-
+        loadConfig();
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
