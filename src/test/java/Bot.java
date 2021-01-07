@@ -52,7 +52,7 @@ public class Bot extends TelegramLongPollingBot {
             String message = "Сегодня, " + getShortUserDate(userDate) + "\n" +
                     Parser.updateParsing(getStringDateToParser(userDate));
             sendMsg(id, message, userDate);
-            System.out.println("user date is " + userDate
+            System.out.println("user date is " + getShortUserDate(userDate)
             + " server date is " + new Date());
         }
         else  if(update.hasCallbackQuery()) {

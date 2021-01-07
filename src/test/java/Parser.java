@@ -60,7 +60,6 @@ public class Parser {
              ) {
             progText = progText + s;
         }
-        System.out.println(progText);
         return progText;
 
     }
