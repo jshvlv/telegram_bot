@@ -25,7 +25,7 @@ import java.util.logging.Level;
 public class Bot extends TelegramLongPollingBot {
     private static String botToken;
     private final SimpleDateFormat fullDate = new SimpleDateFormat("d-MM-yyyy");//12-12-2002
-    private final SimpleDateFormat shortFormat = new SimpleDateFormat("d MMMMM");//01 January
+    private final SimpleDateFormat shortFormat = new SimpleDateFormat("d MMMM", new Locale("ru"));//01 January
 
     public String getShortUserDate(int date) {
         Date userDate = new Date((long) date * 1000);
@@ -49,7 +49,7 @@ public class Bot extends TelegramLongPollingBot {
             update.getMessage();
             int userDate = update.getMessage().getDate();
             String id = update.getMessage().getChatId().toString();
-            String message = "Сегодня, " + getShortUserDate(userDate) + "\n" +
+            String message = "*Сегодня, " + getShortUserDate(userDate) + " на Матч ТВ!*\n" +
                     Parser.updateParsing(getStringDateToParser(userDate));
             sendMsg(id, message, userDate);
             System.out.println("user date is " + getShortUserDate(userDate)

@@ -35,20 +35,23 @@ public class Parser {
             );
 
             for (Element channel : channels
-            ) { // разбираем каждый канал по названию канала
-                chName = channel.getElementsByClass("heading-3").text() +
-                        "\n---------";
-                //Разбираем программу передач по каждому каналу на время и передачу
-                Elements items = channel.getElementsByClass("tv-programm__tvshows-item");
-                progText = "";
-                for (Element item : items
-                ) {
-                    progTime = item.getElementsByClass("tv-programm__tvshow-time").text() + "\n";
-                    progName = item.getElementsByClass("tv-programm__tvshow-title").text() +
-                            "\n ---------------------------";
-                    if(progName.contains("Футбол")) {
-                        String output = chName + " " + progTime + " " + progName;
-                        printList.add(output);
+            ) { // разбираем каждый канал по названию каналz
+                chName = " на " + channel.getElementsByClass("heading-3").text()+ "\n\n";
+                if(chName.contains("Матч ТВ")) {
+                    //Разбираем программу передач по каждому каналу на время и передачу
+                    Elements items = channel.getElementsByClass("tv-programm__tvshows-item");
+                    progText = "";
+                    for (Element item : items
+                    ) {
+                        progTime = "В " +
+                                item.getElementsByClass("tv-programm__tvshow-time").text() + " - ";
+                        progName =
+                                item.getElementsByClass("tv-programm__tvshow-title").text() +
+                                "\n\n";
+                        if (progName.contains("Футбол")) {
+                            String output = progTime + " " + progName;
+                            printList.add(output);
+                        }
                     }
                 }
             }
