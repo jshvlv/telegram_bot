@@ -11,7 +11,7 @@ import java.util.*;
 public class Parser {
     //main только для тестирования парсера
     public static void main(String[] args) throws IOException {
-        updateParsing("08-01-2021");
+        updateParsing("16-01-2021");
     }
 
     /*
@@ -21,7 +21,7 @@ public class Parser {
      * Эта функция на стадии реализации
      */
     public static String updateParsing(String date) {
-        List<String> printList = new ArrayList<>();
+        List<String> printList = new ArrayList<String>();
         String progText="";
         String chName = "";
         String progTime = "";
@@ -63,6 +63,7 @@ public class Parser {
              ) {
             progText = progText + s;
         }
+        System.out.println(progText);
         return progText;
 
     }
