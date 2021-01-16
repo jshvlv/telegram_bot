@@ -1,4 +1,9 @@
 package com.app;
+/**
+ * Бот запускает класс Main указанный в этом файле
+ * Он собирается через мавен (для мавена указан пакет com.app)
+ * затем хероку через прокфайл запускает данный класс в пакете target (после сборки мавен)
+ */
 
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
